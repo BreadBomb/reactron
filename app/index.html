@@ -13,6 +13,17 @@
 
   <link rel="icon" href="/favicon.ico" />
   <title>React.js Boilerplate</title>
+  <script>
+    (function() {
+      if (!process.env.HOT) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = './dist/style.css';
+        // HACK: Writing the script path should be done with webpack
+        document.getElementsByTagName('head')[0].appendChild(link);
+      }
+    })();
+  </script>
 </head>
 
 <body>
@@ -22,12 +33,34 @@
     <strong>enable JS</strong> to make this app work.</noscript>
 
   <!-- The app hooks into this div -->
-  <div id="app"></div>
+  <div id="app">Loading...</div>
 
   <!-- Open Sans Font -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
 
   <!-- A lot of magic happens in this file. HtmlWebpackPlugin automatically injects all assets (e.g. bundle.js, main.css) with the correct HTML tags, which is why they are missing in this file. Don't add any assets here! (Check out webpack.dev.babel.js and webpack.prod.babel.js if you want to know more) -->
+  <script>
+    {
+      const scripts = [];
+      // Dynamically insert the DLL script in development env in the
+      // renderer process
+      if (process.env.NODE_ENV === 'development') {
+        scripts.push('../dll/renderer.dev.dll.js');
+      }
+      // Dynamically insert the bundled app script in the renderer process
+      const port = process.env.PORT || 1212;
+      scripts.push(
+        process.env.HOT
+          ? 'http://localhost:' + port + '/dist/renderer.dev.js'
+          : './dist/renderer.prod.js'
+      );
+      document.write(
+        scripts
+          .map(script => `<script defer src="${script}"><\/script>`)
+          .join('')
+      );
+    }
+  </script>
 </body>
 
 </html>

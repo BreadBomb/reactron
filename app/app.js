@@ -18,10 +18,10 @@ import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
 
 // Import root app
+import LanguageProvider from 'containers/LanguageProvider';
 import App from 'containers/App';
 
 // Import Language Provider
-import LanguageProvider from 'containers/LanguageProvider';
 
 // Load the favicon and the .htaccess file
 import '!file-loader?name=[name].[ext]!./images/favicon.ico';
